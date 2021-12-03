@@ -5,7 +5,7 @@ ENV CRON_INTERVAL="0 2 * * *"
 
 # The borg repository to use, see: https://borgbackup.readthedocs.io/en/stable/usage/general.html#repository-urls.
 # Note that SSH is not supported since openssh is not installed.
-ENV BORG_REPO="/tmp/repo"
+ENV BORG_REPO="/home/borg/repo"
 
 # Authentication password for the repository.
 ENV BORG_PASSPHRASE=""
@@ -30,6 +30,8 @@ ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.
 
 RUN addgroup -g 1000 borg \
   && adduser -Ss /bin/false -u 1000 -G borg -h /home/borg borg \
+  && mkdir -m 775 /home/borg/repo \
+  && chown borg:borg /home/borg/repo \
   && apk add --no-cache borgbackup \
   && wget -O /usr/local/bin/supercronic "$SUPERCRONIC_URL" \
   && echo "${SUPERCRONIC_SHA1SUM}  /usr/local/bin/supercronic" | sha1sum -c - \
